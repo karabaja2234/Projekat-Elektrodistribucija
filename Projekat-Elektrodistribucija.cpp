@@ -42,7 +42,6 @@ struct Racun {
 	Datum datum_placanja;
 };
 
-
 //Struktura za administratora
 struct Administrator {
 	Osoba administrator;
@@ -58,23 +57,25 @@ struct Korisnik {
 	korisnickaUloga uloga;
 	Racun racuni[12];
 	int brojacRacuna = 0;
+	
+	void pregledRacuna() {
+		
+	}
+	void pregledDuga() {
+		
+	}
+	void platiRacun() {
+		
+	}
 };
 
+//Globalne varijable koje se koriste u cijelom programu
 const int maxBrKorisnika = 50;
 Korisnik* nizKorisnika = new Korisnik[maxBrKorisnika];
 int brojKorisnika = 0;
 Administrator admin;
 
-/*
-void dodajRacun() {
-	
-	int x;
-	Racun noviRacun;
-	nizKorisnika[x].racuni[nizKorisnika[x].brojacRacuna] = noviRacun;
-	nizKorisnika[x].brojacRacuna++
-}
-*/
-
+//Funkcija za ucitavanje korisnika iz baze podataka
 void ucitajKorisnike() {
 	ifstream ucitaj;
 	ucitaj.open("bazaPodataka.txt");
@@ -86,10 +87,11 @@ void ucitajKorisnike() {
 	ucitaj.close();
 }
 
+//Funkcija za ispravan unos novog korisnika
 void unosKorisnika() {
 	system("cls");
 	
-	//Ukoliko je broj studenata 0, tj. ako se unosi prvi student, za njega se provjerava samo unos username-a, koji ne smije biti isti kao adminov
+	//Ukoliko je broj korisnika 0, tj. ako se unosi prvi korisnik, za njega se provjerava samo unos username-a, koji ne smije biti isti kao adminov
 	if(brojKorisnika==0) {
 		cout << "\n\n\n\n";
 		cout << crt << "\t\t\t::UNOS NOVOG KORISNIKA::" << crt;
@@ -113,8 +115,7 @@ void unosKorisnika() {
 		cout << "\t\t\tUnesite password: ";
 		getline(cin, nizKorisnika[brojKorisnika].korisnik.password);
 		
-		//cin.ignore();
-		//osmi i deveti broj su grad
+		//NAPOMENA: osmi i deveti karakter su grad
 		//Do while petlja koja radi sve dok se JMBG korisnika ne unese kao broj
 		do {
 			cout << "\t\t\tUnesite JMBG korisnika: ";
@@ -122,7 +123,6 @@ void unosKorisnika() {
 			if(strlen(nizKorisnika[brojKorisnika].JMBG)!=13) {	//Uneseni broj mora biti integer, ne prima string
     			cout << "\t\t\tGreska: Uneseni JMBG mora imati 13 cifara\n";
 			} else break;
-			//break;
 		} while(1);
 		
 		
@@ -137,7 +137,6 @@ void unosKorisnika() {
 				if(nizKorisnika[brojKorisnika].idKorisnika == admin.specijalniID) {
 					cout << "\t\t\tGreska: Uneseni ID je vec u upotrebi\n";
 					validan = false;
-					//break;
 				} else if(!cin) {
 					cin.clear();
     				cout << "\t\t\tGreska: Uneseni ID mora biti broj\n";
@@ -208,15 +207,27 @@ void unosKorisnika() {
 		cout << "\t\t\tUnesite password: ";
 		getline(cin, nizKorisnika[brojKorisnika].korisnik.password);
 		
-		//osmi i deveti broj su grad
-		//Do while petlja koja radi sve dok se JMBG korisnika ne unese kao broj
+		//NAPOMENA: osmi i deveti broj su grad
+		//do while petlja koja radi sve dok se ne pronadje JMBG dug 13 karaktera, te razlicit od svih unesenih JMBG-ova do tog trenutka
 		do {
-			cout << "\t\t\tUnesite JMBG korisnika: ";
-			cin.getline(nizKorisnika[brojKorisnika].JMBG, 14);
-			if(strlen(nizKorisnika[brojKorisnika].JMBG)!=13) {	//Uneseni broj mora biti integer, ne prima string
-    			cout << "\t\t\tGreska: Uneseni JMBG mora imati 13 cifara\n";
-			} else break;
-			//break;
+			bool validan = false;	//Vrijednost za provjeru validnosti indexa
+			do {
+				cout << "\t\t\tUnesite JMBG korisnika: ";
+				cin.getline(nizKorisnika[brojKorisnika].JMBG, 14);
+				for(int i=0; i<brojKorisnika; i++) {
+					if(strcmp(nizKorisnika[brojKorisnika].JMBG, nizKorisnika[i].JMBG) == 0) {
+						cout << "\t\t\tGreska: Uneseni JMBG je vec u upotrebi\n";
+						validan = false;
+					} else if(strlen(nizKorisnika[brojKorisnika].JMBG)!=13) {
+    					cout << "\t\t\tGreska: Uneseni JMBG mora imati 13 cifara\n";
+    					validan = false;
+					} else {
+						validan=true;
+					}
+					break;	
+				}	
+			} while(validan==false);
+			break;
 		} while(1);
 		
 		//do while petlja koja radi sve dok se ne unese ID koji je broj i koji je razlicit od svih prethodno unesenih ID-eva
@@ -317,8 +328,7 @@ bool provjera(int dan, int mjesec, int godina) {
     //Funkcija vraca 1 ako je datum ispravan, a 0 ako nije
 }
 
-
-
+//Poseban meni kojem moze pristupiti samo admin
 int adminMeni() {
 	int izbor;
 	cout << "\n\n\n\n";
@@ -338,6 +348,27 @@ int adminMeni() {
 	return izbor;
 }
 
+void pregledKorisnika(){
+	
+}
+
+void pregledRacunaKorisnika(Korisnik korisnik){
+	
+}
+
+void dodajRacun(Korisnik korisnik) {
+	
+}
+
+void obrisiRacun(Korisnik korisnik) {
+	
+}
+
+void evidentirajRacune(Korisnik korisnik) {
+	
+}
+
+//Poseban meni kojem moze pristupiti bilo koji od korisnika
 int korisnikMeni() {
 	int izbor;
 	cout << "\n\n\n\n";
@@ -353,8 +384,6 @@ int korisnikMeni() {
 	return izbor;
 }
 
-
-
 int main () {
 
 	//Dodaju se informacije za admina (koji je u nasem slucaju samo jedan)
@@ -365,8 +394,8 @@ int main () {
 	admin.specijalniID = 234781;						//Specijalni ID po kojem je admin prepoznatljiv
 	admin.uloga = (korisnickaUloga)administrator;		//Default uloga admina	
 
-	ucitajKorisnike();
-	unosKorisnika();
+	ucitajKorisnike();	//Ucitavanje svih korisnika iz datoteke "bazaPodataka.txt" u niz "nizKorisnika"
+	unosKorisnika();	
 
 	system("PAUSE");
 	return 0;
