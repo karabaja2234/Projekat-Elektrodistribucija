@@ -11,7 +11,7 @@
 
 using namespace std;
 
-char * crt = "\n\t\t=========================================================\n";
+char * crt = "\n\t\t======================================================\n";
 
 //Enumeracija za korisnicku ulogu osobe u sistemu
 enum korisnickaUloga {
@@ -333,38 +333,149 @@ int adminMeni() {
 	int izbor;
 	cout << "\n\n\n\n";
 	do {
-		cout << crt << "\t\t\t::ADMIN MENI::" << crt;
+		cout << crt << "\t\t\t\t::ADMIN MENI::" << crt;
 		cout << "\t\t1. Pregled svih korisnika" << endl;
 		cout << "\t\t2. Pregled svih racuna" << endl;
-		cout << "\t\t3. Registracija novog korisnika" << endl;
-		cout << "\t\t4. Dodavanje racuna" << endl;
-		cout << "\t\t5. Brisanje racuna " << endl;
+		cout << "\t\t3. Dodavanje racuna" << endl;
+		cout << "\t\t4. Registracija novog korisnika" << endl;
+		cout << "\t\t5. Brisanje racuna" << endl;
 		cout << "\t\t6. Pretraga korisnika" << endl;
-		cout << "\t\t7. Evidencija racuna " << endl;
-		cout << "\t\t8. Kraj rada" << crt;
+		cout << "\t\t7. Evidencija racuna" << endl;
+		cout << "\t\t8. Ispis uplatnice za korisnika" << endl;
+		cout << "\t\t9. Kraj rada" << crt;
 		cout << "\t\tUnesite izbor: ";
 		cin >> izbor;
-	} while (izbor<1 || izbor>8);
+	} while (izbor<1 || izbor>9);
 	return izbor;
 }
 
 void pregledKorisnika(){
-	
+	cout << crt << "\t\t\t\t::PREGLED KORISNIKA::" << crt;
+	cout << "\t\t" << setw(5) << left << "ID" << setw(15) << left << "Ime" << setw(15) << left << "Prezime" << setw(15) << left << "JMBG" << endl; 
+	for(int i=0; i<brojKorisnika; i++) {
+		cout << "\t\t" << setw(5) << left << nizKorisnika[i].idKorisnika << setw(15) << left << nizKorisnika[i].korisnik.ime << setw(15) 
+			 << left << nizKorisnika[i].korisnik.prezime << setw(15) << left << nizKorisnika[i].JMBG << endl; 
+	}
 }
+
+int prikaziKorisnike() {
+	if (brojKorisnika == 0) {
+		cout << "\t\tTrenutno nema registrovanih korisnika!\n";
+		Sleep(2000);
+		system("cls");
+	} else {
+		int rb;
+		cout << "\t\t" << "Rb." << setw(5) << left << "\tID" << setw(15) << left << " Ime" << setw(15) << left << " Prezime" << setw(15) << left << " JMBG" << endl;
+		for (int i=0; i<brojKorisnika; i++) {
+			cout << "\t\t" << i+1 << ".\t" << setw(5) << left << nizKorisnika[i].idKorisnika << setw(15) << left << nizKorisnika[i].korisnik.ime << setw(15) 
+			 << left << nizKorisnika[i].korisnik.prezime << setw(15) << left << nizKorisnika[i].JMBG << endl; 
+		}
+		do {
+			cout << "\t\tUnesite redni broj korisnika: ";
+			cin >> rb;
+		} while(rb<1 || rb>brojKorisnika);
+		return rb-1;
+	}
+}
+
+Racun napraviRacun(string imeDatoteke) {
+	Racun noviRacun;
+	cout << crt << "\t\t\t\t::UNOS RACUNA::" << crt;
+	do {
+		ifstream ucitajRacune;
+		ucitajRacune.open(imeDatoteke);
+		int ID, placen;
+		float iznos;
+		int brojac = 0;
+		Racun ucitaniRacuni[12];
+		while(ucitajRacune >> ucitaniRacuni[brojac].idRacuna >> ucitaniRacuni[brojac].iznos >> placen) {
+			ucitaniRacuni[brojac].status = (Status)placen;
+			brojac++;
+		}
+		ucitajRacune.close();
+		for(int i=0; i<brojac; i++) {
+			cout << "\t\t\tBROJ: " << ucitaniRacuni[i].idRacuna << endl;
+		} 
+		cout << "BROJAC: " << brojac << endl;
+		bool validan = false;	//Vrijednost za provjeru validnosti indexa	
+		//do while petlja koja radi sve dok se ne pronadje indeks razlicit od svih unesenih do tog trenutka
+		do {
+			cout << "\t\tUnesite ID racuna: ";
+			cin >> noviRacun.idRacuna;
+			for(int i=0; i<brojac; i++) {
+				if (noviRacun.idRacuna == ucitaniRacuni[i].idRacuna) {
+					cout << "\t\t\tGreska: Uneseni ID racuna vec postoji\n";
+					cout << "OVDJE: " << i << endl;
+					validan = false;
+					break;
+				} else if (noviRacun.idRacuna != ucitaniRacuni[i].idRacuna){
+					validan = true;
+				} else {
+					validan = true;
+				}	
+			}	
+		} while(validan==false);
+		break;
+	} while(1);
+	
+	cout << "\t\tUnesite iznos racuna: "; cin >> noviRacun.iznos;
+	noviRacun.status = (Status)neplacen;
+	return noviRacun;
+}
+
+
+void azurirajRacuneZaKorisnika(Korisnik korisnik, string imeDatoteke) {
+	ifstream ucitajRacune;
+	ucitajRacune.open(imeDatoteke);
+	int status;
+	while(ucitajRacune >> korisnik.racuni[korisnik.brojacRacuna].idRacuna >> korisnik.racuni[korisnik.brojacRacuna].iznos >> status) {
+		korisnik.racuni[korisnik.brojacRacuna].status = (Status)status;
+		korisnik.brojacRacuna++;
+	}
+	ucitajRacune.close();
+}
+
+void ispisiRacuneKorisnika(Korisnik korisnik, string imeDatoteke) {
+	ofstream ispisiRacune;
+	ispisiRacune.open(imeDatoteke, ios::app);
+	for(int i=0; i<korisnik.brojacRacuna; i++) {
+		ispisiRacune << korisnik.racuni[i].idRacuna << " " << korisnik.racuni[i].iznos << " " << korisnik.racuni[i].status << endl;
+	}
+	ispisiRacune.close();
+}
+
+
+/*
+void dodajRacun(){
+	cout << crt << "\t\t\t\t::ODABERITE KORISNIKA::" << crt;
+	Korisnik &korisnik = nizKorisnika[prikaziKorisnike()];
+	string imeDatoteke;
+	imeDatoteke = korisnik.korisnik.ime + korisnik.korisnik.prezime + "_racun.txt";
+	azurirajRacuneZaKorisnika(korisnik, imeDatoteke);
+}*/
 
 void pregledRacunaKorisnika(Korisnik korisnik){
+	cout << crt << "\t\t\t\t::RACUNI KORISNIKA::" << crt;
+	string imeDatoteke = korisnik.korisnik.ime + korisnik.korisnik.prezime + "_racun.txt";
+	//azurirajRacuneZaKorisnika(korisnik, imeDatoteke);
+	cout << endl << endl;
+	cout << "\t\t" << setw(5) << left << "ID" << setw(10) << left << "Iznos" << setw(10) << left << "Status" << setw(20) << left << "Datum placanja" << endl; 
+	for(int i=0; i<korisnik.brojacRacuna; i++) {
+		cout << "\t\t" << setw(10) << left << korisnik.racuni[i].idRacuna << setw(10) << left << korisnik.racuni[i].iznos << setw(10) << left << korisnik.racuni[i].status << setw(20) << left;
+		info(korisnik.racuni[i].datum_placanja);
+		cout << endl;
+	}
+}
+
+void obrisiRacun(Korisnik korisnik){
 	
 }
 
-void dodajRacun(Korisnik korisnik) {
+void evidentirajRacune(Korisnik korisnik){
 	
 }
 
-void obrisiRacun(Korisnik korisnik) {
-	
-}
-
-void evidentirajRacune(Korisnik korisnik) {
+void ispisUplatnice(Korisnik korisnik){
 	
 }
 
@@ -373,7 +484,7 @@ int korisnikMeni() {
 	int izbor;
 	cout << "\n\n\n\n";
 	do {
-		cout << crt << "\t\t\t::KORISNIK MENI::" << crt;
+		cout << crt << "\t\t\t\t::KORISNIK MENI::" << crt;
 		cout << "\t\t1. Pregled racuna" << endl;
 		cout << "\t\t2. Pregled duga" << endl;
 		cout << "\t\t3. Plati racun " << endl;
@@ -384,18 +495,166 @@ int korisnikMeni() {
 	return izbor;
 }
 
+int loginMeni() {
+	int izbor;
+	cout << "\n\n\n\n";
+	do {
+		cout << crt << "\t\t\t\t::Login / Register::" << crt;
+		cout << "\t\t\t\t1. Login" << endl;
+		cout << "\t\t\t\t2. Registrujte novog usera" << endl;
+		cout << "\t\t\t\t3. Napustite sistem" << endl;
+		cout << "\n\t\t\t\tUnesite izbor: ";
+		cin >> izbor;
+		cin.ignore();
+	} while (izbor<1 || izbor>3);
+	return izbor;
+}
+
+//Funkcija koja unosi tekst za prosljedjene varijable username-a i passworda, te vraca odredjene vrijednosti na osnovu unesenih podataka
+int login(string username, string password) {
+	//Unos username-a i passworda
+	cout << "\n\n\n\n";
+	cout << crt << "\t\t\t\t\t::Login::" << crt;
+	cout << "\t\t\t\tUsername: ";
+	getline(cin, username);
+	cout << "\t\t\t\tPassword: ";
+	getline(cin, password);
+	//Provjera ukoliko je uneseni username/password admina
+	if(username == admin.administrator.username && password == admin.administrator.password) {
+		return 234781; //Vraca se unikatna vrijednost samo za tu osobu
+	} else {
+		//U suprotnom, prolazi se kroz niz korisnika koji su registrovani, te funkcija vraca id tog korisnika
+		for (int i=0; i<brojKorisnika; i++) {
+			if(username == nizKorisnika[i].korisnik.username && password == nizKorisnika[i].korisnik.password) {
+				return nizKorisnika[i].idKorisnika;
+			}
+		}
+	}
+	cin.ignore();
+}
+
+/*
+Student &st = nizStudenata[prikaziStudente()];
+st.radioTest = false;
+*/
+
+
 int main () {
 
 	//Dodaju se informacije za admina (koji je u nasem slucaju samo jedan)
 	admin.administrator.ime = "Grupa";					//Ime admina
 	admin.administrator.prezime = "osam";				//Prezime admina
-	admin.administrator.username = "grupa8";			//Username: selman
+	admin.administrator.username = "admin";				//Username: selman
 	admin.administrator.password = "admin";				//Password: admin
 	admin.specijalniID = 234781;						//Specijalni ID po kojem je admin prepoznatljiv
 	admin.uloga = (korisnickaUloga)administrator;		//Default uloga admina	
 
 	ucitajKorisnike();	//Ucitavanje svih korisnika iz datoteke "bazaPodataka.txt" u niz "nizKorisnika"
-	unosKorisnika();	
+	//unosKorisnika();
+	
+	int odabir;	//Varijabla za odabir panela u glavnom meniju
+	system("cls");
+	
+	//cout << "Broj studenata: " << brojStudenata << "\n\n";
+	//Do while petlja koja radi sve dok se ne unese vrijednost 3, kojom se glavni meni zatvara
+	do {
+		int ID;	//Varijabla u koju se smjesta rezultat funkcije login()
+		string username, password;
+		system("cls");
+		odabir = loginMeni();	//Poziva se glavni meni i njegova vrijednost se smjesta u varijablu "odabir"
+		//Ukoliko je "odabir" 3 petlja se prekida
+		if(!cin) {
+			cin.clear();
+    		cout << "\tGreska: Unesite broj od 1 do 3\n";
+    		cin.ignore(100000, '\n');
+		} else if (odabir == 3) {
+				break;
+			} else if (odabir == 1) {	//Ukoliko je "odabir" 1, provjerava se da li vrijednost ID pripada adminu ili studentima
+				system("cls");
+				ID = login(username, password);
+				system("cls");
+				if(ID == admin.specijalniID) {	//Ako pripada adminu, otvara se poseban "adminMeni()" za njega, u kojem ima 7 opcija
+					system("cls");
+					int izbor;
+					do {
+						izbor = adminMeni();
+						if(izbor == 9) {
+							break;
+						}
+						if (izbor == 1) {	//Opcija 1: 
+							system("cls");
+							pregledKorisnika();
+						} else if (izbor == 2) {	//Opcija 2: 
+							system("cls");
+							cout << crt << "\t\t\t\t::ODABERITE KORISNIKA::" << crt;
+							Korisnik korisnik = nizKorisnika[prikaziKorisnike()];
+							string imeDatoteke = korisnik.korisnik.ime + korisnik.korisnik.prezime + "_racun.txt";
+							azurirajRacuneZaKorisnika(korisnik, imeDatoteke);
+							pregledRacunaKorisnika(korisnik);
+						} else if (izbor == 3) {	//Opcija 3: 
+							system("cls");
+							cout << crt << "\t\t\t\t::ODABERITE KORISNIKA::" << crt;
+							Korisnik odabraniKorisnik = nizKorisnika[prikaziKorisnike()];
+							string imeDatoteke = odabraniKorisnik.korisnik.ime + odabraniKorisnik.korisnik.prezime + "_racun.txt";
+							azurirajRacuneZaKorisnika(odabraniKorisnik, imeDatoteke);
+							odabraniKorisnik.racuni[odabraniKorisnik.brojacRacuna++] = napraviRacun(imeDatoteke);
+							ispisiRacuneKorisnika(odabraniKorisnik, imeDatoteke);
+							//azurirajRacuneZaKorisnika(korisnik, imeDatoteke);
+							//dodajRacun();
+							/*
+							azurirajRacuneZaKorisnika(korisnik, imeDatoteke);
+							ofstream ispisiRacune;
+							ispisiRacune.open(imeDatoteke, ios::app);
+							for(int i=0; i<korisnik.brojacRacuna; i++) {
+								ispisiRacune << korisnik.racuni[i].idRacuna << " " << korisnik.racuni[i].iznos << " " << korisnik.racuni[i].status << endl;
+							}*/
+						} else if (izbor == 4) {	//Opcija 4: 
+							
+						} else if (izbor == 5) {	//Opcija 5: 
+							
+						} else if (izbor == 6) {	//Opcija 6: 
+							
+						} else if (izbor == 7) {	//Opcija 7: 
+							
+						} else if (izbor == 8) {	//Opcija 8: 
+							
+						}
+							system("PAUSE");
+							system("cls");
+					} while(1);				//Kraj admin menija
+				} else {	//Ako ID nije pripadao adminu, onda se kroz for petlju ispod provjerava kojem studentu pripada broj indexa
+					for(int i=0; i<brojKorisnika; i++) {
+						if(ID == nizKorisnika[i].idKorisnika) {	//Ako petlja nadje datog studenta, pokrece se studentMeni() putem do while petlje ispod
+							do {
+								int izbor;
+								izbor = korisnikMeni();
+								if (izbor == 4) {	//Opcija 4: zatvara korisnik meni
+									break;
+								} else if (izbor == 1) {	//Opcija 1:
+									
+								
+								} else if (izbor == 2) {	//Opcija 2: Student moze pregledati rezultate testova svih studenata
+									
+								} else if (izbor == 3) {
+									
+								}
+									system("PAUSE");
+									system("cls");	
+							} while(1);	//Kraj student menija
+							break;	//Prekid za for petlju nakon sto nadje odgovarajuceg studenta	
+						} else {
+							//Za pogresno unesenu sifru/username sistem nece nista uraditi, nego ce se ponovo ucitati login meni
+						}
+					}
+				}
+			} else if (odabir == 2) {	//Opcija 2 iz glavnog menija: Registracija novog studenta
+				unosKorisnika();
+				cout << "\n\t\t="; Sleep(100); cout << "="; Sleep(100); cout << "="; Sleep(100); cout << "=";
+				Sleep(100); cout << "="; Sleep(100); cout << " Korisnik uspjesno registrovan!\n";
+				Sleep(1500);
+				system("cls");
+			} 
+		} while(1);	
 
 	system("PAUSE");
 	return 0;
