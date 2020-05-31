@@ -63,6 +63,7 @@ struct Korisnik {
 	int brojacRacuna = 0;
 	int grad;
 	
+<<<<<<< HEAD
 	void postaviGradKorisnika() {
 		char osmi, deveti;
 		osmi = this->JMBG[7];
@@ -75,6 +76,8 @@ struct Korisnik {
 		this->grad = brojGrada;
 	}
 
+=======
+>>>>>>> 617f0a09b0663869ee4c88f7e4e3ee203fa35216
 	void pregledRacuna() {
 		string imeDatoteke = this->korisnik.ime + this->korisnik.prezime + "_racun.txt";
 		ifstream ucitajRacune;
