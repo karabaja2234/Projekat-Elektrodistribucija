@@ -23,6 +23,10 @@ enum Status {
 	placen, neplacen
 };
 
+enum Grad {
+	Banjaluka = 10, Bihac, Doboj, Gorazde, Livno, Mostar, Prijedor, Sarajevo, Tuzla, Zenica 
+};
+
 //Stuktura za datum
 struct Datum{
 	int dan, mjesec, godina;
@@ -57,8 +61,20 @@ struct Korisnik {
 	korisnickaUloga uloga;
 	Racun racuni[12];
 	int brojacRacuna = 0;
+	int grad;
 	
-	
+	void postaviGradKorisnika() {
+		char osmi, deveti;
+		osmi = this->JMBG[7];
+		deveti = this->JMBG[8];
+		
+		int prvaCifra = (int)osmi - 48;
+		int drugaCifra = (int)deveti - 48;
+		
+		int brojGrada = prvaCifra*10 + drugaCifra;
+		this->grad = brojGrada;
+	}
+
 	void pregledRacuna() {
 		string imeDatoteke = this->korisnik.ime + this->korisnik.prezime + "_racun.txt";
 		ifstream ucitajRacune;
@@ -118,8 +134,47 @@ struct Korisnik {
 		float suma = 0;
 		cout << "\t\tUkupan dug koji treba platiti iznosi: " << this->dug(iznosi, brojac) << "\n\n";
 	}
+	
 	void platiRacun() {
+		string imeDatoteke = this->korisnik.ime + this->korisnik.prezime + "_racun.txt";
+		ifstream ucitajRacune;
+		ucitajRacune.open(imeDatoteke);
+		int ID, placen;
+		float iznos;
+		int brojac = 0;
+		Racun ucitaniRacuni[12];
+		while(ucitajRacune >> ucitaniRacuni[brojac].idRacuna >> ucitaniRacuni[brojac].iznos >> placen) {
+			ucitaniRacuni[brojac].status = (Status)placen;
+			brojac++;
+		}
+		ucitajRacune.close();
+		cout << crt << "\t\t\t\t::PREGLED RACUNA::" << crt;
+		cout << endl;
+		cout << "\t\t" << "Rb." << setw(5) << left << "\tID" << setw(15) << left << " Iznos" << setw(15) << left << " \tStatus" << endl;
+		for(int i=0; i<brojac; i++) {
+			cout << "\t\t" << i+1 << ".\t" << setw(5) << left << ucitaniRacuni[i].idRacuna << setw(6) << left << ucitaniRacuni[i].iznos << "KM |";
+			cout << setw(15) << right;
+			if(ucitaniRacuni[i].status == 0) {
+				cout << " Placen" << endl;
+			} else cout << " Neplacen" << endl;
+		}
 		
+		int rb;
+		do {
+			cout << "\t\tUnesite redni broj racuna: ";
+			cin >> rb;
+		} while(rb<1 || rb>brojac);
+		
+		ucitaniRacuni[rb-1].status = (Status)0;
+		ofstream obnoviRacune;
+		obnoviRacune.open(imeDatoteke, ios::trunc);
+		for(int i=0; i<brojac; i++) {
+			obnoviRacune << ucitaniRacuni[i].idRacuna << " " << ucitaniRacuni[i].iznos << " " << ucitaniRacuni[i].status << endl;
+		}
+		obnoviRacune.close();	
+		
+		cout << "\n\t\t="; Sleep(100); cout << "="; Sleep(100); cout << "="; Sleep(100); 
+		cout << "="; Sleep(100); cout << "="; Sleep(100); cout << " Racun uspjesno placen!\n"; Sleep(1500);
 	}
 };
 
@@ -134,7 +189,7 @@ void ucitajKorisnike() {
 	ifstream ucitaj;
 	ucitaj.open("bazaPodataka.txt");
 	int uloga;
-	while(ucitaj >> nizKorisnika[brojKorisnika].korisnik.ime >> nizKorisnika[brojKorisnika].korisnik.prezime >> nizKorisnika[brojKorisnika].korisnik.username >> nizKorisnika[brojKorisnika].korisnik.password >> nizKorisnika[brojKorisnika].idKorisnika >> nizKorisnika[brojKorisnika].JMBG >> uloga) {
+	while(ucitaj >> nizKorisnika[brojKorisnika].korisnik.ime >> nizKorisnika[brojKorisnika].korisnik.prezime >> nizKorisnika[brojKorisnika].korisnik.username >> nizKorisnika[brojKorisnika].korisnik.password >> nizKorisnika[brojKorisnika].idKorisnika >> nizKorisnika[brojKorisnika].JMBG >> uloga >> nizKorisnika[brojKorisnika].grad) {
 		nizKorisnika[brojKorisnika].uloga = (korisnickaUloga)uloga;
 		brojKorisnika++;
 	}
@@ -204,6 +259,7 @@ void unosKorisnika() {
 		
 		//Dodjeljivanje default vrijednosti
 		nizKorisnika[brojKorisnika].uloga = (korisnickaUloga)korisnik;
+		nizKorisnika[brojKorisnika].postaviGradKorisnika();
 		
 		//Dodavanje korisnika u bazu podataka
 		ofstream dodajKorisnika("bazaPodataka.txt", ios::app);
@@ -213,7 +269,8 @@ void unosKorisnika() {
 		dodajKorisnika << nizKorisnika[brojKorisnika].korisnik.password << " ";
 		dodajKorisnika << nizKorisnika[brojKorisnika].idKorisnika << " ";
 		dodajKorisnika << nizKorisnika[brojKorisnika].JMBG << " ";
-		dodajKorisnika << nizKorisnika[brojKorisnika].uloga << endl;
+		dodajKorisnika << nizKorisnika[brojKorisnika].uloga << " ";
+		dodajKorisnika << nizKorisnika[brojKorisnika].grad << endl;
 		dodajKorisnika.close();
 		
 		//Dodavanje datoteke za racune korisnika: ime datoteke ce biti: ImePrezime_racun.txt
@@ -311,6 +368,7 @@ void unosKorisnika() {
 	
 		//Dodjeljivanje default vrijednosti
 		nizKorisnika[brojKorisnika].uloga = (korisnickaUloga)korisnik;
+		nizKorisnika[brojKorisnika].postaviGradKorisnika();
 		
 		//Dodavanje korisnika u bazu podataka
 		ofstream dodajKorisnika("bazaPodataka.txt", ios::app);
@@ -320,7 +378,8 @@ void unosKorisnika() {
 		dodajKorisnika << nizKorisnika[brojKorisnika].korisnik.password << " ";
 		dodajKorisnika << nizKorisnika[brojKorisnika].idKorisnika << " ";
 		dodajKorisnika << nizKorisnika[brojKorisnika].JMBG << " ";
-		dodajKorisnika << nizKorisnika[brojKorisnika].uloga << endl;
+		dodajKorisnika << nizKorisnika[brojKorisnika].uloga << " ";
+		dodajKorisnika << nizKorisnika[brojKorisnika].grad << endl;
 		dodajKorisnika.close();
 		
 		//Dodavanje datoteke za racune korisnika: ime datoteke ce biti: ImePrezime_racun.txt
@@ -392,23 +451,44 @@ int adminMeni() {
 		cout << "\t\t2. Pregled svih racuna" << endl;
 		cout << "\t\t3. Dodavanje racuna" << endl;
 		cout << "\t\t4. Registracija novog korisnika" << endl;
-		cout << "\t\t5. Brisanje racuna" << endl;
-		cout << "\t\t6. Pretraga korisnika" << endl;
-		cout << "\t\t7. Evidencija racuna" << endl;
-		cout << "\t\t8. Ispis uplatnice za korisnika" << endl;
-		cout << "\t\t9. Kraj rada" << crt;
+		cout << "\t\t5. Pretraga korisnika" << endl;
+		cout << "\t\t6. Ispis uplatnice za korisnika" << endl;
+		cout << "\t\t7. Kraj rada" << crt;
 		cout << "\t\tUnesite izbor: ";
 		cin >> izbor;
-	} while (izbor<1 || izbor>9);
+	} while (izbor<1 || izbor>7);
 	return izbor;
 }
 
 void pregledKorisnika(){
 	cout << crt << "\t\t\t\t::PREGLED KORISNIKA::" << crt;
-	cout << "\t\t" << setw(5) << left << "ID" << setw(15) << left << "Ime" << setw(15) << left << "Prezime" << setw(15) << left << "JMBG" << endl; 
+	cout << "\t\t" << setw(5) << left << "ID" << setw(15) << left << "Ime" << setw(15) << left << "Prezime" << setw(15) << left << "JMBG" << setw(10) << left << "Grad" << endl; 
 	for(int i=0; i<brojKorisnika; i++) {
 		cout << "\t\t" << setw(5) << left << nizKorisnika[i].idKorisnika << setw(15) << left << nizKorisnika[i].korisnik.ime << setw(15) 
-			 << left << nizKorisnika[i].korisnik.prezime << setw(15) << left << nizKorisnika[i].JMBG << endl; 
+			 << left << nizKorisnika[i].korisnik.prezime << setw(15) << left << nizKorisnika[i].JMBG << setw(10) << left;
+		if(nizKorisnika[i].grad == 10) {
+			cout << "Banjaluka" << endl; 
+		} else if (nizKorisnika[i].grad == 11){
+			cout << "Bihac" << endl;
+		} else if (nizKorisnika[i].grad == 12){
+			cout << "Doboj" << endl;
+		} else if (nizKorisnika[i].grad == 13){
+			cout << "Gorazde" << endl;
+		} else if (nizKorisnika[i].grad == 14){
+			cout << "Livno" << endl;
+		} else if (nizKorisnika[i].grad == 15){
+			cout << "Mostar" << endl;
+		} else if (nizKorisnika[i].grad == 16){
+			cout << "Prijedor" << endl;
+		} else if (nizKorisnika[i].grad == 17){
+			cout << "Sarajevo" << endl;
+		} else if (nizKorisnika[i].grad == 18){
+			cout << "Tuzla" << endl;
+		} else if (nizKorisnika[i].grad == 19){
+			cout << "Zenica" << endl;
+		} else {
+			cout << "NULL" << endl;
+		}
 	}
 }
 
@@ -595,7 +675,12 @@ int main () {
 	admin.administrator.username = "admin";				//Username: selman
 	admin.administrator.password = "admin";				//Password: admin
 	admin.specijalniID = 234781;						//Specijalni ID po kojem je admin prepoznatljiv
-	admin.uloga = (korisnickaUloga)administrator;		//Default uloga admina	
+	admin.uloga = (korisnickaUloga)administrator;		//Default uloga admina
+	
+	/*
+	for(int i=0; i<brojKorisnika; i++) {
+		nizKorisnika[i].postaviGradKorisnika(); 
+	}*/	
 
 	ucitajKorisnike();	//Ucitavanje svih korisnika iz datoteke "bazaPodataka.txt" u niz "nizKorisnika"
 	//unosKorisnika();
@@ -626,7 +711,7 @@ int main () {
 					int izbor;
 					do {
 						izbor = adminMeni();
-						if(izbor == 9) {
+						if(izbor == 7) {
 							break;
 						}
 						if (izbor == 1) {	//Opcija 1: 
@@ -676,7 +761,8 @@ int main () {
 									system("cls");
 									nizKorisnika[i].pregledDuga();
 								} else if (izbor == 3) {
-									
+									system("cls");
+									nizKorisnika[i].platiRacun();
 								}
 									system("PAUSE");
 									system("cls");	
