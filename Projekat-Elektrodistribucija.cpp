@@ -58,7 +58,6 @@ struct Korisnik {
 	Racun racuni[12];
 	int brojacRacuna = 0;
 	
-	
 	void pregledRacuna() {
 		string imeDatoteke = this->korisnik.ime + this->korisnik.prezime + "_racun.txt";
 		ifstream ucitajRacune;
@@ -118,8 +117,47 @@ struct Korisnik {
 		float suma = 0;
 		cout << "\t\tUkupan dug koji treba platiti iznosi: " << this->dug(iznosi, brojac) << "\n\n";
 	}
+	
 	void platiRacun() {
+		string imeDatoteke = this->korisnik.ime + this->korisnik.prezime + "_racun.txt";
+		ifstream ucitajRacune;
+		ucitajRacune.open(imeDatoteke);
+		int ID, placen;
+		float iznos;
+		int brojac = 0;
+		Racun ucitaniRacuni[12];
+		while(ucitajRacune >> ucitaniRacuni[brojac].idRacuna >> ucitaniRacuni[brojac].iznos >> placen) {
+			ucitaniRacuni[brojac].status = (Status)placen;
+			brojac++;
+		}
+		ucitajRacune.close();
+		cout << crt << "\t\t\t\t::PREGLED RACUNA::" << crt;
+		cout << endl;
+		cout << "\t\t" << "Rb." << setw(5) << left << "\tID" << setw(15) << left << " Iznos" << setw(15) << left << " \tStatus" << endl;
+		for(int i=0; i<brojac; i++) {
+			cout << "\t\t" << i+1 << ".\t" << setw(5) << left << ucitaniRacuni[i].idRacuna << setw(6) << left << ucitaniRacuni[i].iznos << "KM |";
+			cout << setw(15) << right;
+			if(ucitaniRacuni[i].status == 0) {
+				cout << " Placen" << endl;
+			} else cout << " Neplacen" << endl;
+		}
 		
+		int rb;
+		do {
+			cout << "\t\tUnesite redni broj racuna: ";
+			cin >> rb;
+		} while(rb<1 || rb>brojac);
+		
+		ucitaniRacuni[rb-1].status = (Status)0;
+		ofstream obnoviRacune;
+		obnoviRacune.open(imeDatoteke, ios::trunc);
+		for(int i=0; i<brojac; i++) {
+			obnoviRacune << ucitaniRacuni[i].idRacuna << " " << ucitaniRacuni[i].iznos << " " << ucitaniRacuni[i].status << endl;
+		}
+		obnoviRacune.close();	
+		
+		cout << "\n\t\t="; Sleep(100); cout << "="; Sleep(100); cout << "="; Sleep(100); 
+		cout << "="; Sleep(100); cout << "="; Sleep(100); cout << " Racun uspjesno placen!\n"; Sleep(1500);
 	}
 };
 
@@ -676,7 +714,8 @@ int main () {
 									system("cls");
 									nizKorisnika[i].pregledDuga();
 								} else if (izbor == 3) {
-									
+									system("cls");
+									nizKorisnika[i].platiRacun();
 								}
 									system("PAUSE");
 									system("cls");	
