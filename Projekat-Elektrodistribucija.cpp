@@ -23,6 +23,10 @@ enum Status {
 	placen, neplacen
 };
 
+enum Grad {
+	Banjaluka = 10, Bihac, Doboj, Gorazde, Livno, Mostar, Prijedor, Sarajevo, Tuzla, Zenica 
+};
+
 //Stuktura za datum
 struct Datum{
 	int dan, mjesec, godina;
@@ -59,16 +63,32 @@ struct Korisnik {
 	int brojacRacuna = 0;
 	int grad;
 	
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 76248620a03ae18538f5667c4df68a4705969c03
 	void postaviGradKorisnika() {
 		char osmi, deveti;
 		osmi = this->JMBG[7];
 		deveti = this->JMBG[8];
+<<<<<<< HEAD
 		int prvaCifra = (int)osmi - 48;
 		int drugaCifra = (int)deveti - 48;
+=======
+		
+		int prvaCifra = (int)osmi - 48;
+		int drugaCifra = (int)deveti - 48;
+		
+>>>>>>> 76248620a03ae18538f5667c4df68a4705969c03
 		int brojGrada = prvaCifra*10 + drugaCifra;
 		this->grad = brojGrada;
 	}
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 617f0a09b0663869ee4c88f7e4e3ee203fa35216
+>>>>>>> 76248620a03ae18538f5667c4df68a4705969c03
 	void pregledRacuna() {
 		string imeDatoteke = this->korisnik.ime + this->korisnik.prezime + "_racun.txt";
 		ifstream ucitajRacune;
@@ -92,6 +112,7 @@ struct Korisnik {
 				cout << " Placen" << endl;
 			} else cout << " Neplacen" << endl;
 		}	
+<<<<<<< HEAD
 	}
 	
 	float dug(float iznosi[], int brojac) {
@@ -102,6 +123,18 @@ struct Korisnik {
 		}
 	}
 	
+=======
+	}
+	
+	float dug(float iznosi[], int brojac) {
+		if(brojac == 0) {
+			return 0;
+		} else {
+			return iznosi[brojac-1] + dug(iznosi,brojac-1);		
+		}
+	}
+	
+>>>>>>> 76248620a03ae18538f5667c4df68a4705969c03
 	void pregledDuga() {
 		string imeDatoteke = this->korisnik.ime + this->korisnik.prezime + "_racun.txt";
 		ifstream ucitajRacune;
@@ -663,6 +696,14 @@ int main () {
 	admin.specijalniID = 234781;						//Specijalni ID po kojem je admin prepoznatljiv
 	admin.uloga = (korisnickaUloga)administrator;		//Default uloga admina
 	
+<<<<<<< HEAD
+=======
+	/*
+	for(int i=0; i<brojKorisnika; i++) {
+		nizKorisnika[i].postaviGradKorisnika(); 
+	}*/	
+
+>>>>>>> 76248620a03ae18538f5667c4df68a4705969c03
 	ucitajKorisnike();	//Ucitavanje svih korisnika iz datoteke "bazaPodataka.txt" u niz "nizKorisnika"
 	//unosKorisnika();
 	
