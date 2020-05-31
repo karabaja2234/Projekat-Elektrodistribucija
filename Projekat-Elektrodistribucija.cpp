@@ -734,6 +734,168 @@ int login(string username, string password) {
 	cin.ignore();
 }
 
+int pretragaMeni() {
+	int izbor;
+	cout << "\n\n\n\n";
+	do {
+		cout << crt << "\t\t\t\t::PRETRAGA MENI::" << crt;
+		cout << "\t\t1. Pretraga korisnika po gradovima" << endl;
+		cout << "\t\t2. Sortiranje korisnika po maksimalnom dugu" << endl;
+		cout << "\t\t3. Dodavanje racuna" << endl;
+		cout << "\t\t4. Kraj rada" << crt;
+		cout << "\t\tIzbor: ";
+		cin >> izbor;
+	} while (izbor<1 || izbor>4);
+	return izbor;
+}
+
+void pretragaPoGradu() {
+	int izbor;
+	cout << "\n\n\n\n";
+	do {
+		cout << crt << "\t\t\t\t::PRETRAGA PO GRADOVIMA::" << crt;
+		cout << "\t\t1. Banjaluka" << endl;
+		cout << "\t\t2. Bihac" << endl;
+		cout << "\t\t3. Doboj" << endl;
+		cout << "\t\t4. Gorazde" << endl;
+		cout << "\t\t5. Livno" << endl;
+		cout << "\t\t6. Mostar" << endl;
+		cout << "\t\t7. Prijedor" << endl;
+		cout << "\t\t8. Sarajevo" << endl;
+		cout << "\t\t9. Tuzla" << endl;
+		cout << "\t\t10. Zenica" << endl;
+		cout << "\t\t10. Kraj rada" << crt;
+		cout << "\t\tIzbor: ";
+		cin >> izbor;
+		cout << endl;
+			if(izbor==11) {
+			break;
+		} else if (izbor==1){
+			int brojac = 0;
+			for(int i=0; i<brojKorisnika; i++) {
+				if(nizKorisnika[i].grad == 10) {
+					cout << "\t\t" << brojac+1 << "." << setw(10) << left << nizKorisnika[i].korisnik.ime << setw(15) 
+				 		 << left << nizKorisnika[i].korisnik.prezime << endl; 
+				 	brojac++;
+				}
+			}
+			if(brojac == 0) {
+				cout << "\t\tNema korisnika iz Banjaluke!\n";
+			}
+		} else if (izbor==2){
+			int brojac = 0;
+			for(int i=0; i<brojKorisnika; i++) {
+				if(nizKorisnika[i].grad == 11) {
+					cout << "\t\t" << brojac+1 << "." << setw(10) << left << nizKorisnika[i].korisnik.ime << setw(15) 
+				 		 << left << nizKorisnika[i].korisnik.prezime << endl; 
+				 	brojac++;
+				}
+			}
+			if(brojac == 0) {
+				cout << "\t\tNema korisnika iz Bihaca!\n";
+			}
+		} else if (izbor==3){
+			int brojac = 0;
+			for(int i=0; i<brojKorisnika; i++) {
+				if(nizKorisnika[i].grad == 12) {
+					cout << "\t\t" << brojac+1 << "." << setw(10) << left << nizKorisnika[i].korisnik.ime << setw(15) 
+				 		 << left << nizKorisnika[i].korisnik.prezime << endl; 
+				 	brojac++;
+				}
+			}
+			if(brojac == 0) {
+				cout << "\t\tNema korisnika iz Doboja!\n";
+			}
+		} else if (izbor==4){
+			int brojac = 0;
+			for(int i=0; i<brojKorisnika; i++) {
+				if(nizKorisnika[i].grad == 13) {
+					cout << "\t\t" << brojac+1 << "." << setw(10) << left << nizKorisnika[i].korisnik.ime << setw(15) 
+				 		 << left << nizKorisnika[i].korisnik.prezime << endl; 
+				 	brojac++;
+				}
+			}	
+			if(brojac == 0) {
+				cout << "\t\tNema korisnika iz Gorazda!\n";
+			}
+		} else if (izbor==5){
+			int brojac = 0;
+			for(int i=0; i<brojKorisnika; i++) {
+				if(nizKorisnika[i].grad == 14) {
+					cout << "\t\t" << brojac+1 << "." << setw(10) << left << nizKorisnika[i].korisnik.ime << setw(15) 
+				 		 << left << nizKorisnika[i].korisnik.prezime << endl; 
+				 	brojac++;
+				}
+			}
+			if(brojac == 0) {
+				cout << "\t\tNema korisnika iz Livna!\n";
+			}
+		} else if (izbor==6){
+			int brojac = 0;
+			for(int i=0; i<brojKorisnika; i++) {
+				if(nizKorisnika[i].grad == 15) {
+					cout << "\t\t" << brojac+1 << "." << setw(10) << left << nizKorisnika[i].korisnik.ime << setw(15) 
+				 		 << left << nizKorisnika[i].korisnik.prezime << endl; 
+				 	brojac++;
+				}
+			}
+			if(brojac == 0) {
+				cout << "\t\tNema korisnika iz Mostara!\n";
+			}
+		} else if (izbor==7){
+			int brojac = 0;
+			for(int i=0; i<brojKorisnika; i++) {
+				if(nizKorisnika[i].grad == 16) {
+					cout << "\t\t" << brojac+1 << "." << setw(10) << left << nizKorisnika[i].korisnik.ime << setw(15) 
+				 		 << left << nizKorisnika[i].korisnik.prezime << endl; 
+				 	brojac++;
+				}
+			}
+			if(brojac == 0) {
+				cout << "\t\tNema korisnika iz Prijedora!\n";
+			}
+		} else if (izbor==8){
+			int brojac = 0;
+			for(int i=0; i<brojKorisnika; i++) {
+				if(nizKorisnika[i].grad == 17) {
+					cout << "\t\t" << brojac+1 << "." << setw(10) << left << nizKorisnika[i].korisnik.ime << setw(15) 
+				 		 << left << nizKorisnika[i].korisnik.prezime << endl; 
+				 	brojac++;
+				}
+			}
+			if(brojac == 0) {
+				cout << "\t\tNema korisnika iz Sarajeva!\n";
+			}
+		} else if (izbor==9){
+			int brojac = 0;
+			for(int i=0; i<brojKorisnika; i++) {
+				if(nizKorisnika[i].grad == 18) {
+					cout << "\t\t" << brojac+1 << "." << setw(10) << left << nizKorisnika[i].korisnik.ime << setw(15) 
+				 		 << left << nizKorisnika[i].korisnik.prezime << endl; 
+				 	brojac++;
+				}
+			}
+			if(brojac == 0) {
+				cout << "\t\tNema korisnika iz Tuzle!\n";
+			}
+		} else if (izbor==10){
+			int brojac = 0;
+			for(int i=0; i<brojKorisnika; i++) {
+				if(nizKorisnika[i].grad == 19) {
+					cout << "\t\t" << brojac+1 << "." << setw(10) << left << nizKorisnika[i].korisnik.ime << setw(15) 
+				 		 << left << nizKorisnika[i].korisnik.prezime << endl; 
+				 	brojac++;
+				}
+			}
+			if(brojac == 0) {
+				cout << "\t\tNema korisnika iz Zenice!\n";
+			}
+		}
+	} while (izbor<1 || izbor>11);
+}
+
+
+
 int main () {
 
 	//Dodaju se informacije za admina (koji je u nasem slucaju samo jedan)
@@ -796,7 +958,19 @@ int main () {
 							system("cls");
 							unosKorisnika();
 						} else if (izbor == 5) {	//Opcija 5: 
-							
+							system("cls");
+							do {
+								int odabirMenija;
+								odabirMenija = pretragaMeni();
+								if(odabirMenija == 4) {
+									break;
+								} else if(odabirMenija == 1) {
+									system("cls");
+									pretragaPoGradu();
+								}
+								system("PAUSE");
+								system("cls");	
+							} while(1);
 						} else if (izbor == 6) {	//Opcija 6: 
 							system("cls");
 							Korisnik &odabraniKorisnik = nizKorisnika[prikaziKorisnike()];
