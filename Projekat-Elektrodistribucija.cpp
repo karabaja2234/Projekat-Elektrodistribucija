@@ -741,11 +741,10 @@ int pretragaMeni() {
 		cout << crt << "\t\t\t\t::PRETRAGA MENI::" << crt;
 		cout << "\t\t1. Pretraga korisnika po gradovima" << endl;
 		cout << "\t\t2. Sortiranje korisnika po maksimalnom dugu" << endl;
-		cout << "\t\t3. Dodavanje racuna" << endl;
-		cout << "\t\t4. Kraj rada" << crt;
+		cout << "\t\t3. Kraj rada" << crt;
 		cout << "\t\tIzbor: ";
 		cin >> izbor;
-	} while (izbor<1 || izbor>4);
+	} while (izbor<1 || izbor>3);
 	return izbor;
 }
 
@@ -894,7 +893,54 @@ void pretragaPoGradu() {
 	} while (izbor<1 || izbor>11);
 }
 
-
+void pretragaPoMaxDugu() {
+	float sumeDugova[brojKorisnika] = {0};
+	for(int i=0; i<brojKorisnika; i++) {
+		string imeDatoteke = nizKorisnika[i].korisnik.ime + nizKorisnika[i].korisnik.prezime + "_racun.txt";
+		ifstream ucitajRacune;
+		ucitajRacune.open(imeDatoteke);
+		int ID, placen;
+		float iznos;
+		int brojac = 0;
+		Racun ucitaniRacuni[12];
+		while(ucitajRacune >> ucitaniRacuni[brojac].idRacuna >> ucitaniRacuni[brojac].iznos >> placen) {
+			ucitaniRacuni[brojac].status = (Status)placen;
+			brojac++;
+		}
+		float iznosi[12];
+		int brojacIznosa = 0;
+		for(int i=0; i<brojac; i++) {
+			if(ucitaniRacuni[i].status == 1) {
+				iznosi[brojacIznosa] = ucitaniRacuni[i].iznos;
+				brojacIznosa++;
+			}
+		}
+		ucitajRacune.close();
+		
+		sumeDugova[i] = nizKorisnika[i].dug(iznosi, brojac);
+	}
+	
+	Korisnik tempKorisnik;
+	float tempSuma;
+	for(int i=0; i<brojKorisnika-1; i++) {
+		for (int j=i; j<brojKorisnika; j++) {
+			if(sumeDugova[i]<sumeDugova[j]) {
+				tempKorisnik = nizKorisnika[j];
+				nizKorisnika[j] = nizKorisnika[i];
+				nizKorisnika[i] = tempKorisnik;
+				tempSuma = sumeDugova[j];
+				sumeDugova[j] = sumeDugova[i];
+				sumeDugova[i] = tempSuma;
+			}
+		}
+	}
+	
+	cout << crt << "\t\t\t\t::KORISNICI SORTIRANI PO DUGOVIMA::" << crt;
+	for(int i=0; i<brojKorisnika; i++) {
+		cout << "\t\t" << i+1 << ". " << setw(10) << left << nizKorisnika[i].korisnik.ime << " " << setw(10) << left << nizKorisnika[i].korisnik.prezime << setw(6) << left <<  "| Dug: " << sumeDugova[i] << endl;
+	}
+	cout << endl;		
+}
 
 int main () {
 
@@ -962,11 +1008,14 @@ int main () {
 							do {
 								int odabirMenija;
 								odabirMenija = pretragaMeni();
-								if(odabirMenija == 4) {
+								if(odabirMenija == 3) {
 									break;
 								} else if(odabirMenija == 1) {
 									system("cls");
 									pretragaPoGradu();
+								} else if (odabirMenija == 2) {
+									system("cls");
+									pretragaPoMaxDugu();
 								}
 								system("PAUSE");
 								system("cls");	
@@ -975,10 +1024,6 @@ int main () {
 							system("cls");
 							Korisnik &odabraniKorisnik = nizKorisnika[prikaziKorisnike()];
 							ispisUplatnice(odabraniKorisnik);
-						} else if (izbor == 7) {	//Opcija 7: 
-							
-						} else if (izbor == 8) {	//Opcija 8: 
-							
 						}
 							system("PAUSE");
 							system("cls");
