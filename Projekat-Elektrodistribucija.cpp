@@ -58,11 +58,65 @@ struct Korisnik {
 	Racun racuni[12];
 	int brojacRacuna = 0;
 	
+	
 	void pregledRacuna() {
-		
+		string imeDatoteke = this->korisnik.ime + this->korisnik.prezime + "_racun.txt";
+		ifstream ucitajRacune;
+		ucitajRacune.open(imeDatoteke);
+		int ID, placen;
+		float iznos;
+		int brojac = 0;
+		Racun ucitaniRacuni[12];
+		while(ucitajRacune >> ucitaniRacuni[brojac].idRacuna >> ucitaniRacuni[brojac].iznos >> placen) {
+			ucitaniRacuni[brojac].status = (Status)placen;
+			brojac++;
+		}
+		ucitajRacune.close();
+		cout << crt << "\t\t\t\t::PREGLED RACUNA::" << crt;
+		cout << endl;
+		cout << "\t\t" << setw(5) << left << "ID" << setw(6) << left << "Iznos" << setw(15) << left << "\tStatus" << endl; 
+		for(int i=0; i<brojac; i++) {
+			cout << "\t\t" << setw(5) << left << ucitaniRacuni[i].idRacuna << setw(6) << left << ucitaniRacuni[i].iznos << "KM |";
+			cout << setw(15) << left;
+			if(ucitaniRacuni[i].status == 0) {
+				cout << " Placen" << endl;
+			} else cout << " Neplacen" << endl;
+		}	
 	}
+	
+	float dug(float iznosi[], int brojac) {
+		if(brojac == 0) {
+			return 0;
+		} else {
+			return iznosi[brojac-1] + dug(iznosi,brojac-1);		
+		}
+	}
+	
 	void pregledDuga() {
-		
+		string imeDatoteke = this->korisnik.ime + this->korisnik.prezime + "_racun.txt";
+		ifstream ucitajRacune;
+		ucitajRacune.open(imeDatoteke);
+		int ID, placen;
+		float iznos;
+		int brojac = 0;
+		Racun ucitaniRacuni[12];
+		while(ucitajRacune >> ucitaniRacuni[brojac].idRacuna >> ucitaniRacuni[brojac].iznos >> placen) {
+			ucitaniRacuni[brojac].status = (Status)placen;
+			brojac++;
+		}
+		float iznosi[12];
+		int brojacIznosa = 0;
+		for(int i=0; i<brojac; i++) {
+			if(ucitaniRacuni[i].status == 1) {
+				iznosi[brojacIznosa] = ucitaniRacuni[i].iznos;
+				brojacIznosa++;
+			}
+		}
+		ucitajRacune.close();
+		cout << crt << "\t\t\t\t::PREGLED DUGA::" << crt;
+		cout << endl;
+		float suma = 0;
+		cout << "\t\tUkupan dug koji treba platiti iznosi: " << this->dug(iznosi, brojac) << "\n\n";
 	}
 	void platiRacun() {
 		
@@ -393,36 +447,33 @@ Racun napraviRacun(string imeDatoteke) {
 			brojac++;
 		}
 		ucitajRacune.close();
-		for(int i=0; i<brojac; i++) {
-			cout << "\t\t\tBROJ: " << ucitaniRacuni[i].idRacuna << endl;
-		} 
-		cout << "BROJAC: " << brojac << endl;
 		bool validan = false;	//Vrijednost za provjeru validnosti indexa	
 		//do while petlja koja radi sve dok se ne pronadje indeks razlicit od svih unesenih do tog trenutka
 		do {
 			cout << "\t\tUnesite ID racuna: ";
 			cin >> noviRacun.idRacuna;
-			for(int i=0; i<brojac; i++) {
-				if (noviRacun.idRacuna == ucitaniRacuni[i].idRacuna) {
-					cout << "\t\t\tGreska: Uneseni ID racuna vec postoji\n";
-					cout << "OVDJE: " << i << endl;
-					validan = false;
-					break;
-				} else if (noviRacun.idRacuna != ucitaniRacuni[i].idRacuna){
-					validan = true;
-				} else {
-					validan = true;
+			if(brojac==0) {
+				validan = true;
+			} else {
+				for(int i=0; i<brojac; i++) {
+					if (noviRacun.idRacuna == ucitaniRacuni[i].idRacuna) {
+						cout << "\t\t\tGreska: Uneseni ID racuna vec postoji\n";
+						validan = false;
+						break;
+					} else if (noviRacun.idRacuna != ucitaniRacuni[i].idRacuna){
+						validan = true;
+					} else {
+						validan = true;
+					}		
 				}	
 			}	
 		} while(validan==false);
 		break;
 	} while(1);
-	
 	cout << "\t\tUnesite iznos racuna: "; cin >> noviRacun.iznos;
 	noviRacun.status = (Status)neplacen;
 	return noviRacun;
 }
-
 
 void azurirajRacuneZaKorisnika(Korisnik korisnik, string imeDatoteke) {
 	ifstream ucitajRacune;
@@ -437,33 +488,36 @@ void azurirajRacuneZaKorisnika(Korisnik korisnik, string imeDatoteke) {
 
 void ispisiRacuneKorisnika(Korisnik korisnik, string imeDatoteke) {
 	ofstream ispisiRacune;
-	ispisiRacune.open(imeDatoteke, ios::app);
+	ispisiRacune.open(imeDatoteke, ios::trunc);
 	for(int i=0; i<korisnik.brojacRacuna; i++) {
 		ispisiRacune << korisnik.racuni[i].idRacuna << " " << korisnik.racuni[i].iznos << " " << korisnik.racuni[i].status << endl;
 	}
 	ispisiRacune.close();
 }
 
-
-/*
-void dodajRacun(){
-	cout << crt << "\t\t\t\t::ODABERITE KORISNIKA::" << crt;
-	Korisnik &korisnik = nizKorisnika[prikaziKorisnike()];
-	string imeDatoteke;
-	imeDatoteke = korisnik.korisnik.ime + korisnik.korisnik.prezime + "_racun.txt";
-	azurirajRacuneZaKorisnika(korisnik, imeDatoteke);
-}*/
-
 void pregledRacunaKorisnika(Korisnik korisnik){
-	cout << crt << "\t\t\t\t::RACUNI KORISNIKA::" << crt;
 	string imeDatoteke = korisnik.korisnik.ime + korisnik.korisnik.prezime + "_racun.txt";
+	ifstream ucitajRacune;
+	ucitajRacune.open(imeDatoteke);
+	int ID, placen;
+	float iznos;
+	int brojac = 0;
+	Racun ucitaniRacuni[12];
+	while(ucitajRacune >> ucitaniRacuni[brojac].idRacuna >> ucitaniRacuni[brojac].iznos >> placen) {
+		ucitaniRacuni[brojac].status = (Status)placen;
+		brojac++;
+	}
+	ucitajRacune.close();
+	cout << crt << "\t\t\t\t::RACUNI KORISNIKA::" << crt;
 	//azurirajRacuneZaKorisnika(korisnik, imeDatoteke);
-	cout << endl << endl;
-	cout << "\t\t" << setw(5) << left << "ID" << setw(10) << left << "Iznos" << setw(10) << left << "Status" << setw(20) << left << "Datum placanja" << endl; 
-	for(int i=0; i<korisnik.brojacRacuna; i++) {
-		cout << "\t\t" << setw(10) << left << korisnik.racuni[i].idRacuna << setw(10) << left << korisnik.racuni[i].iznos << setw(10) << left << korisnik.racuni[i].status << setw(20) << left;
-		info(korisnik.racuni[i].datum_placanja);
-		cout << endl;
+	cout << endl;
+	cout << "\t\t" << setw(5) << left << "ID" << setw(6) << left << "Iznos" << setw(15) << left << "\tStatus" << endl; 
+	for(int i=0; i<brojac; i++) {
+		cout << "\t\t" << setw(5) << left << ucitaniRacuni[i].idRacuna << setw(6) << left << ucitaniRacuni[i].iznos << "KM |";
+		cout << setw(15) << left;
+		if(ucitaniRacuni[i].status == 0) {
+			cout << " Placen" << endl;
+		} else cout << " Neplacen" << endl;
 	}
 }
 
@@ -533,12 +587,6 @@ int login(string username, string password) {
 	cin.ignore();
 }
 
-/*
-Student &st = nizStudenata[prikaziStudente()];
-st.radioTest = false;
-*/
-
-
 int main () {
 
 	//Dodaju se informacije za admina (koji je u nasem slucaju samo jedan)
@@ -587,29 +635,20 @@ int main () {
 						} else if (izbor == 2) {	//Opcija 2: 
 							system("cls");
 							cout << crt << "\t\t\t\t::ODABERITE KORISNIKA::" << crt;
-							Korisnik korisnik = nizKorisnika[prikaziKorisnike()];
-							string imeDatoteke = korisnik.korisnik.ime + korisnik.korisnik.prezime + "_racun.txt";
-							azurirajRacuneZaKorisnika(korisnik, imeDatoteke);
+							Korisnik &korisnik = nizKorisnika[prikaziKorisnike()];
+							//string imeDatoteke = korisnik.korisnik.ime + korisnik.korisnik.prezime + "_racun.txt";
 							pregledRacunaKorisnika(korisnik);
 						} else if (izbor == 3) {	//Opcija 3: 
 							system("cls");
 							cout << crt << "\t\t\t\t::ODABERITE KORISNIKA::" << crt;
-							Korisnik odabraniKorisnik = nizKorisnika[prikaziKorisnike()];
+							Korisnik &odabraniKorisnik = nizKorisnika[prikaziKorisnike()];
 							string imeDatoteke = odabraniKorisnik.korisnik.ime + odabraniKorisnik.korisnik.prezime + "_racun.txt";
 							azurirajRacuneZaKorisnika(odabraniKorisnik, imeDatoteke);
 							odabraniKorisnik.racuni[odabraniKorisnik.brojacRacuna++] = napraviRacun(imeDatoteke);
 							ispisiRacuneKorisnika(odabraniKorisnik, imeDatoteke);
-							//azurirajRacuneZaKorisnika(korisnik, imeDatoteke);
-							//dodajRacun();
-							/*
-							azurirajRacuneZaKorisnika(korisnik, imeDatoteke);
-							ofstream ispisiRacune;
-							ispisiRacune.open(imeDatoteke, ios::app);
-							for(int i=0; i<korisnik.brojacRacuna; i++) {
-								ispisiRacune << korisnik.racuni[i].idRacuna << " " << korisnik.racuni[i].iznos << " " << korisnik.racuni[i].status << endl;
-							}*/
 						} else if (izbor == 4) {	//Opcija 4: 
-							
+							system("cls");
+							unosKorisnika();
 						} else if (izbor == 5) {	//Opcija 5: 
 							
 						} else if (izbor == 6) {	//Opcija 6: 
@@ -631,10 +670,11 @@ int main () {
 								if (izbor == 4) {	//Opcija 4: zatvara korisnik meni
 									break;
 								} else if (izbor == 1) {	//Opcija 1:
-									
-								
+									system("cls");
+									nizKorisnika[i].pregledRacuna();
 								} else if (izbor == 2) {	//Opcija 2: Student moze pregledati rezultate testova svih studenata
-									
+									system("cls");
+									nizKorisnika[i].pregledDuga();
 								} else if (izbor == 3) {
 									
 								}
