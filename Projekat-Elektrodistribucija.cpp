@@ -739,7 +739,7 @@ int loginMeni() {
 	do {
 		cout << crt << "\t\t\t\t::Login / Register::" << crt;
 		cout << "\t\t\t\t1. Login" << endl;
-		cout << "\t\t\t\t2. Registrujte novog usera" << endl;
+		cout << "\t\t\t\t2. Register" << endl;
 		cout << "\t\t\t\t3. Napustite sistem" << endl;
 		cout << "\n\t\t\t\tUnesite izbor: ";
 		cin >> izbor;
