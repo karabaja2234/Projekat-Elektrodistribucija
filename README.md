@@ -25,6 +25,7 @@
 - Prilikom registrovanja novog korisnika, automatski se pravi datoteka formata: **ImeKorisnikaPrezimeKorisnika_racuni.txt** u koju se spremaju svi računi koji se dodaju za tog korisnika i iz koje se prate sve moguće promjene
 - Sistem je **interaktivan** i sve promjene se dešavaju u realnom vremenu (nije potrebno zatvarati program), te se mogu provjeravati u navedenim datotekama
 - Pretraga korisnika po gradovima izvršava se na osnovu 8. i 9. karaktera u JMBG-u datog korisnika
+- Sistem je regulisan da provjerava sve unose, prilikom čega ne dopušta unos vrijednosti koje nisu moguće/dopuštene.
 
 ###### Projekat radili: **Grupa 8**
 - Patković Selman
